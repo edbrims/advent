@@ -5,5 +5,9 @@ example_input = '''
 Example
 '''
 
-input = get_input(use_real, example_input, __file__)
-print(input)
+lines = get_input(use_real, example_input, __file__)
+
+#
+
+print(f'Part 1: {0}')
+print(f'Part 2: {0}')
