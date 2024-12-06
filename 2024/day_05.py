@@ -34,19 +34,21 @@ example_input = '''
 
 lines = get_input(use_real, example_input, __file__)
 
-start_of_updates = 0
-rules = []
-for i in range(len(lines)):
-    line = lines[i]
-    if "," in line:
-        start_of_updates = i
-        break
-    rules.append([int(p) for p in line.split('|')])
+def parse_rules_and_updates(lines):
+    start_of_updates = 0
+    rules = []
+    for i in range(len(lines)):
+        line = lines[i]
+        if "," in line:
+            start_of_updates = i
+            break
+        rules.append([int(p) for p in line.split('|')])
 
-updates = []
-for i in range(start_of_updates, len(lines)):
-    line = lines[i]
-    updates.append( [int(p) for p in line.split(',')])
+    updates = []
+    for i in range(start_of_updates, len(lines)):
+        line = lines[i]
+        updates.append([int(p) for p in line.split(',')])
+    return rules, updates
 
 def is_correct(update, rules):
     page_locations = {}
@@ -54,7 +56,9 @@ def is_correct(update, rules):
         page_locations[update[i]] = i
 
     for rule in rules:
-        if rule[0] in page_locations and rule[1] in page_locations and page_locations[rule[1]] < page_locations[rule[0]]:
+        if (rule[0] in page_locations and
+            rule[1] in page_locations and
+            page_locations[rule[1]] < page_locations[rule[0]]):
             return False
     return True
 
@@ -65,19 +69,8 @@ def middle(update):
         exit()
     return update[(num_updates - 1) // 2]
 
-def count_middles_of_good_updates(updates, rules):
-    total = 0
-    for update in updates:
-        if is_correct(update, rules):
-            total += middle(update)
-    return total
-
 def filter(rules, page_set):
-    filtered_rules = []
-    for rule in rules:
-        if rule[0] in page_set and rule[1] in page_set:
-            filtered_rules.append(rule)
-    return filtered_rules
+    return [r for r in rules if r[0] in page_set and r[1] in page_set]
 
 def get_next_page(pages_remaining, filtered_rules):
     candidates = set(pages_remaining)
@@ -98,15 +91,12 @@ def fix(update, rules):
     return fixed_update
 
 
-def count_middles_of_bad_updates(updates, rules):
-    total = 0
-    for update in updates:
-        if not is_correct(update, rules):
-            fixed_update = fix(update, rules)
-            total += middle(fixed_update)
-    return total
+def count_middles_of_good_updates(updates, rules):
+    return sum([middle(u) for u in updates if is_correct(u, rules)])
 
+def count_middles_of_bad_updates(updates, rules):
+    return sum([middle(fix(u, rules)) for u in updates if not is_correct(u, rules)])
+
+rules, updates = parse_rules_and_updates(lines)
 print(f'Part 1: {count_middles_of_good_updates(updates, rules)}') # 4774
 print(f'Part 2: {count_middles_of_bad_updates(updates, rules)}') # 6004
-
-
