@@ -72,7 +72,7 @@ def print_grid(grid, visited):
                 row.append(grid[r][c])
         print(''.join(row))
 
-def count_steps_out(grid):
+def get_visited_positions(grid):
     position = find_start()
 
     visited = set()
@@ -86,7 +86,7 @@ def count_steps_out(grid):
             position = square_ahead
 
     # print_grid(grid, visited)
-    return len(visited)
+    return visited
 
 def gives_loop(grid, extra_block):
     position = find_start()
@@ -109,12 +109,12 @@ def gives_loop(grid, extra_block):
 
 def count_loops(grid):
     count = 0
-    for r in range(len(grid)):
-        for c in range(len(grid[r])):
-            if grid[r][c] == '.' and gives_loop(grid, Coords(r, c)):
-                print(f'You get a loop with a block at ({r}, {c})')
-                count += 1
+    positions_to_check = get_visited_positions(grid)
+    for block_position in positions_to_check:
+        if grid[block_position.r][block_position.c] == '.' and gives_loop(grid, block_position):
+            print(f'You get a loop with a block at {block_position}')
+            count += 1
     return count
 
-print(f'Part 1: {count_steps_out(grid)}')
+print(f'Part 1: {len(get_visited_positions(grid))}')
 print(f'Part 2: {count_loops(grid)}')
