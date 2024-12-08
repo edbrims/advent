@@ -65,8 +65,7 @@ def is_correct(update, rules):
 def middle(update):
     num_updates = len(update)
     if num_updates % 2 == 0:
-        print(f'Even number of updates! {num_updates}')
-        exit()
+        raise Exception(f'Even number of updates! {num_updates}')
     return update[(num_updates - 1) // 2]
 
 def filter(rules, page_set):
