@@ -1,6 +1,6 @@
 from input_loader import get_input
 
-use_real = True
+use_real = False
 example_input = '''
 47|53
 97|13
@@ -65,8 +65,7 @@ def is_correct(update, rules):
 def middle(update):
     num_updates = len(update)
     if num_updates % 2 == 0:
-        print(f'Even number of updates! {num_updates}')
-        exit()
+        raise Exception(f'Even number of updates! {num_updates}')
     return update[(num_updates - 1) // 2]
 
 def filter(rules, page_set):
