@@ -78,5 +78,5 @@ def count_antinodes(lines, repeating):
     antinodes = find_all_antinodes(antennae, len(lines), len(lines[0]), repeating)
     return len(antinodes)
 
-print(f'Part 1: {count_antinodes(lines, False)}')
-print(f'Part 2: {count_antinodes(lines, True)}')
+print(f'Part 1: {count_antinodes(lines, False)}') # 295
+print(f'Part 2: {count_antinodes(lines, True)}') # 1034
