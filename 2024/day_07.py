@@ -30,16 +30,6 @@ def can_make_rtl(target, ingredients, can_concatenate):
 
     return (ingredients[0] in targets)
 
-def can_make_with_concat(target, ingredients):
-    results = {ingredients[0]}
-    for number in ingredients[1:]:
-        by_adding = {t + number for t in results}
-        by_multiplying = {t * number for t in results}
-        by_concat = {int(f"{t}{number}") for t in results}
-        results = {r for r in by_adding.union(by_multiplying).union(by_concat) if r <= target}
-
-    return (target in results)
-
 
 def add_up_targets(lines, can_concatenate):
     count = 0
