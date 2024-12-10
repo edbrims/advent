@@ -14,7 +14,7 @@ class Block:
         self.start = start
 
     def checksum(self):
-        return self.id * self.length * (2 * self.start + self.length - 1) // 2
+        return self.id * self.length * (self.start + self.end()) // 2
 
     def end(self):
         return self.start + self.length - 1
