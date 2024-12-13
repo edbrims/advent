@@ -62,7 +62,9 @@ class XYZVector:
         return f'({self.x}, {self.y}, {self.z})'
 
     def __eq__(self, __value: object) -> bool:
-        return self.x == __value.x and self.y == __value.y and self.z == __value.z
+        return (self.x == __value.x and
+                self.y == __value.y and
+                self.z == __value.z)
 
     def __hash__(self) -> int:
-        return self.x + self.y * 1000
+        return self.x + self.y * 1000 + self.z * 1000000
