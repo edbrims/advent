@@ -1,4 +1,4 @@
-from input_loader import get_input
+from utils import get_input, Coords
 
 use_real = True
 example_input = '''
@@ -15,23 +15,6 @@ example_input = '''
 ............
 ............
 '''
-
-class Coords:
-    def __init__(self, r, c):
-        self.r = r
-        self.c = c
-
-    def add(self, vector):
-        return Coords(self.r + vector.r, self.c + vector.c)
-
-    def __repr__(self):
-        return f'({self.r}, {self.c})'
-
-    def __eq__(self, __value: object) -> bool:
-        return self.r == __value.r and self.c == __value.c
-
-    def __hash__(self) -> int:
-        return self.r + self.c * 1000
 
 lines = get_input(use_real, example_input, __file__)
 

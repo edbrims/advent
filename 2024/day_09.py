@@ -1,4 +1,4 @@
-from input_loader import get_input
+from utils import get_input
 
 use_real = True
 example_input = '''
