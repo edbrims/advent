@@ -1,4 +1,4 @@
-from input_loader import get_input
+from utils import get_input, XYVector
 
 use_real = True
 example_input = '''
@@ -19,25 +19,14 @@ Button B: X+27, Y+71
 Prize: X=18641, Y=10279
 '''
 
-class XYCoords:
-    def __init__(self, x, y):
-        self.x = int(x)
-        self.y = int(y)
-
-    def add(self, vector):
-        return XYCoords(self.x + vector.x, self.y + vector.y)
-
-    def __repr__(self):
-        return f'({self.x}, {self.y})'
-
 class Machine:
-    def __init__(self, a, b, prize, prize_offset):
+    def __init__(self, a, b, prize):
         self.a = a
         self.b = b
-        self.prize = prize.add(XYCoords(prize_offset, prize_offset))
+        self.prize = prize
 
     def __repr__(self):
-        return f'[A: {self.a}, B: {self.b}, prize {self.prize}]'
+        return f"[A: {self.a}, B: {self.b}, prize {self.prize}]"
 
 lines = get_input(use_real, example_input, __file__)
 
@@ -45,12 +34,12 @@ def load_machines(lines, prize_offset):
     machines = []
     for i in range(len(lines) // 3):
         buttonACoordStrings = lines[3*i][12:].split(", Y+")
-        buttonACoords = XYCoords(buttonACoordStrings[0], buttonACoordStrings[1])
+        buttonACoords = XYVector(buttonACoordStrings[0], buttonACoordStrings[1])
         buttonBCoordStrings = lines[3*i + 1][12:].split(", Y+")
-        buttonBCoords = XYCoords(buttonBCoordStrings[0], buttonBCoordStrings[1])
+        buttonBCoords = XYVector(buttonBCoordStrings[0], buttonBCoordStrings[1])
         prizeCoordStrings = lines[3*i + 2][9:].split(", Y=")
-        prize = XYCoords(prizeCoordStrings[0], prizeCoordStrings[1])
-        machines.append(Machine(buttonACoords, buttonBCoords, prize, prize_offset))
+        prize = XYVector(prizeCoordStrings[0], prizeCoordStrings[1]).add(XYVector(prize_offset, prize_offset))
+        machines.append(Machine(buttonACoords, buttonBCoords, prize))
     return machines
 
 def bestTime(machine):
@@ -65,8 +54,8 @@ def bestTime(machine):
     # ta(ya*xb - xa*yb) = (xb*yp-yb*xp)
     # ta = (xb*yp-yb*xp)/(ya*xb-xa*yb)
     if machine.a.y * machine.b.x == machine.a.x * machine.b.y:
-        # A and B vectors are parallel. I wonder if I need to handle this.
-        raise Exception(f'{machine} has parallel vectors')
+        # A and B vectors are parallel. Turns out this never happens.
+        raise Exception(f"{machine} has parallel vectors")
 
     aTimes = ((machine.b.x * machine.prize.y - machine.b.y * machine.prize.x) /
               (machine.a.y * machine.b.x - machine.a.x * machine.b.y))
@@ -75,7 +64,7 @@ def bestTime(machine):
 
     aTimesInt = int(aTimes)
     bTimesInt = int(bTimes)
-    if aTimes == aTimesInt and bTimes == bTimesInt:
+    if aTimes == aTimesInt and bTimes == bTimesInt and aTimes >= 0 and bTimes >= 0:
         return 3 * aTimesInt + bTimesInt
     return None
 
