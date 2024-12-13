@@ -1,4 +1,4 @@
-from input_loader import get_input
+from utils import get_input, Coords
 import random
 import string
 
@@ -13,23 +13,6 @@ example_input = '''
 01329801
 10456732
 '''
-
-class Coords:
-    def __init__(self, r, c):
-        self.r = r
-        self.c = c
-
-    def add(self, vector):
-        return Coords(self.r + vector.r, self.c + vector.c)
-
-    def __repr__(self):
-        return f'({self.r}, {self.c})'
-
-    def __eq__(self, __value: object) -> bool:
-        return self.r == __value.r and self.c == __value.c
-
-    def __hash__(self) -> int:
-        return self.r + self.c * 1000
 
 directions = [Coords(0, 1), Coords(1, 0), Coords(0, -1), Coords(-1, 0)]
 
@@ -108,4 +91,4 @@ def print_stereogram(grid, square_size, background):
                     prev_separation = separation
             print(''.join(output_row))
 
-print_stereogram(grid, 15, 50)
+# print_stereogram(grid, 15, 50)

@@ -1,4 +1,4 @@
-from input_loader import get_input
+from utils import get_input, Coords
 
 use_real = True
 example_input = '''
@@ -13,29 +13,6 @@ MIIIIIJJEE
 MIIISIJEEE
 MMMISSJEEE
 '''
-
-class Coords:
-    def __init__(self, r, c):
-        self.r = r
-        self.c = c
-
-    def add(self, vector):
-        return Coords(self.r + vector.r, self.c + vector.c)
-
-    def turn_right(self):
-        return Coords(self.c, -self.r)
-
-    def turn_left(self):
-        return Coords(-self.c, self.r)
-
-    def __repr__(self):
-        return f'({self.r}, {self.c})'
-
-    def __eq__(self, __value: object) -> bool:
-        return self.r == __value.r and self.c == __value.c
-
-    def __hash__(self) -> int:
-        return self.r + self.c * 1000
 
 directions = [Coords(0, 1), Coords(1,  0), Coords(0,  -1), Coords(-1, 0)]
 diagonals  = [Coords(1, 1), Coords(1, -1), Coords(-1, -1), Coords(-1, 1)]
@@ -85,14 +62,17 @@ def measure_perimeter(region):
 def count_corners(region):
     num_corners = 0
     for square in region:
-        # Convex corners, where two adjacent sides are out.
+        # Check if the square's four corners are corners of the region.
         for diagonal in diagonals:
-            if square.add(Coords(diagonal.r, 0)) not in region and square.add(Coords(0, diagonal.c)) not in region:
+            # It's a convex corner if the two adjacent squares are outside the region.
+            if (square.add(Coords(diagonal.r, 0)) not in region and
+                square.add(Coords(0, diagonal.c)) not in region):
                 num_corners += 1
 
-        # Concave corners, where two adjacent sides are in with the diagonal between them out.
-        for diagonal in diagonals:
-            if square.add(diagonal) not in region and square.add(Coords(diagonal.r, 0)) in region and square.add(Coords(0, diagonal.c)) in region:
+            # It's a concave corner if the two adjacent squares are inside with the diagonal square outside.
+            elif (square.add(diagonal) not in region and
+                  square.add(Coords(diagonal.r, 0)) in region and
+                  square.add(Coords(0, diagonal.c)) in region):
                 num_corners += 1
 
     return num_corners
@@ -100,7 +80,7 @@ def count_corners(region):
 # This way is fun but doesn't work, because it misses the internal boundaries.
 def count_sides_by_crawling(region):
     # Crawl around the border from a top edge
-    starting_square = Coords(len(grid), 0)
+    starting_square = Coords(1000, 0)
     for square in region:
         if square.r < starting_square.r:
             starting_square = square
@@ -109,23 +89,23 @@ def count_sides_by_crawling(region):
 
     num_turns = 0
     first = True
-    current_square = starting_square
-    while current_square != starting_square or direction != Coords(0, 1) or first:
+    right_foot_square = starting_square
+    while right_foot_square != starting_square or direction != Coords(0, 1) or first:
         first  = False
-        ahead_right = current_square.add(direction)
+        ahead_right = right_foot_square.add(direction)
         ahead_left = ahead_right.add(direction.turn_left())
         if ahead_right not in region:
-            # Turn right, same square
+            # Turn right, right foot stays in the same square
             direction = direction.turn_right()
             num_turns += 1
         elif ahead_left in region:
-            # Turn left, square is ahead left
+            # Turn left, right foot is now ahead left.
             direction = direction.turn_left()
-            current_square = ahead_left
+            right_foot_square = ahead_left
             num_turns += 1
         else:
             # Go straight
-            current_square = ahead_right
+            right_foot_square = ahead_right
     return num_turns
 
 def price_region_by_perimeter(region):
@@ -147,5 +127,5 @@ def price_regions_by_sides(regions):
 grid = get_input(use_real, example_input, __file__)
 regions = find_regions(grid)
 
-print(f'Part 1: {price_regions_by_perimeter(regions)}') # 1473276
-print(f'Part 2: {price_regions_by_sides(regions)}') # 901100
+print(f"Part 1: {price_regions_by_perimeter(regions)}") # 1473276
+print(f"Part 2: {price_regions_by_sides(regions)}") # 901100

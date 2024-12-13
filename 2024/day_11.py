@@ -1,5 +1,5 @@
 from collections import defaultdict
-from input_loader import get_input
+from utils import get_input
 import time
 
 use_real = True
