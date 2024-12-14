@@ -38,6 +38,9 @@ class XYVector:
     def add(self, vector):
         return XYVector(self.x + vector.x, self.y + vector.y)
 
+    def times(self, scalar):
+        return XYVector(self.x * scalar, self.y * scalar)
+
     def __repr__(self):
         return f"({self.x}, {self.y})"
 
