@@ -62,43 +62,30 @@ class Box:
     def squares(self):
         return [self.left_square.add(Coords(0, i)) for i in range(self.width)]
 
-    def can_move(self, vector, state):
+    def next_squares(self, vector):
         if vector.r == 0:
             # Moving horizontally.
             if vector.c < 0:
                 # Left
-                next_squares = [self.left_square.add(vector)]
+                return [self.left_square.add(vector)]
             elif vector.c > 0:
                 # Right
-                next_squares = [self.right_square().add(vector)]
+                return [self.right_square().add(vector)]
         else:
             # Moving vertically
-            next_squares = [p.add(vector) for p in self.squares()]
+            return [p.add(vector) for p in self.squares()]
 
-        for next_square in next_squares:
+    def can_move(self, vector, state):
+        for next_square in self.next_squares(vector):
             if next_square in state.walls:
                 return False
-            if next_square in state.boxes:
-                other_can_move = state.boxes[next_square].can_move(vector, state)
-                if other_can_move:
-                    continue
+            if (next_square in state.boxes and
+                not state.boxes[next_square].can_move(vector, state)):
                 return False
         return True
 
     def move(self, vector, state):
-        if vector.r == 0:
-            # Moving horizontally.
-            if vector.c < 0:
-                # Left
-                next_squares = [self.left_square.add(vector)]
-            elif vector.c > 0:
-                # Right
-                next_squares = [self.right_square().add(vector)]
-        else:
-            # Moving vertically
-            next_squares = [self.left_square.add(vector), self.right_square().add(vector)]
-
-        for next_square in next_squares:
+        for next_square in self.next_squares(vector):
             if next_square in state.walls:
                 raise Exception(f"Can't move {self} to {next_square} because it's a wall")
             # Clear the way
