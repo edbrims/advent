@@ -107,10 +107,6 @@ lines = get_input(use_real, example_input, __file__)
 # # If register B contains 2024 and register C contains 43690, the program 4,0 would set register B to 44354.
 # print(Machine(0, 2024, 43690, "4,0").run().register_b)
 
-machine = load_machine(lines)
-machine.run()
-print(f"Part 1: {machine.out_text()}") # 1,5,7,4,1,6,0,3,0
-
 # OK, it's actually much much simpler. Forget all the stuff above, this is the program.
 def run_program(a):
     out = []
@@ -137,4 +133,8 @@ def find_input(sequence, so_far):
 
     return None
 
-print(f"Part 2: {find_input([2,4,1,3,7,5,4,0,1,3,0,3,5,5,3,0], 0)}")
+machine = load_machine(lines)
+machine.run()
+print(f"Part 1: {machine.out_text()}") # 1,5,7,4,1,6,0,3,0
+print(f"Alternatively: {run_program(51342988)}") # 1,5,7,4,1,6,0,3,0
+print(f"Part 2: {find_input([2,4,1,3,7,5,4,0,1,3,0,3,5,5,3,0], 0)}") # 108107574778365
