@@ -114,34 +114,27 @@ print(f"Part 1: {machine.out_text()}") # 1,5,7,4,1,6,0,3,0
 # OK, it's actually much much simpler. Forget all the stuff above, this is the program.
 def run_program(a):
     out = []
-    verbose = False
     while a > 0:
-        if verbose:
-            print(f"a={a:b}")
         b = a % 8 # Last 3 bits of A
-        if verbose:
-            print(f"b={b:b} (last 3 bits of a)")
         b = b ^ 3 # Flip the last 2 bits of b
-        if verbose:
-            print(f"b={b:b}={b} (flipped last 2 bits)")        
         c = a >> b # A without its last b bits
-        if verbose:
-            print(f"c={c:b} (Dropped {b} bits of a)")        
         b = b ^ c # XOR c with b
-        if verbose:
-            print(f"b={b:b} (XOR with c)")        
         b = b ^ 3 # Flip the last 2 bits of b
-        if verbose:
-            print(f"b={b:b} (flipped last 2 bits)")        
         a = a >> 3 # Reduce A by 3 bits
-        if verbose:
-            print(f"a={a:b} (Dropped 3 bits)")        
         out.append(b % 8)
-        if verbose:
-            print(f"Output {b%8:b} (Last 3 bits of b)")
-            print()
     return out
 
-print(run_program(51342988))
-# Looking for 2,4,1,3,7,5,4,0,1,3,0,3,5,5,3,0
-print(f"Part 2: {0}")
+def find_input(sequence, so_far):
+    for i in range(8):
+        input = (so_far << 3) + i
+        output = run_program(input)
+        if sequence == output:
+            return input
+        if sequence[-len(output):] == output:
+            recursive_input = find_input(sequence, input)
+            if recursive_input:
+                return recursive_input
+
+    return None
+
+print(f"Part 2: {find_input([2,4,1,3,7,5,4,0,1,3,0,3,5,5,3,0], 0)}")
