@@ -15,11 +15,17 @@ class Coords:
     def add(self, vector):
         return Coords(self.r + vector.r, self.c + vector.c)
 
+    def times(self, scalar):
+        return Coords(self.r * scalar, self.c * scalar)
+
     def turn_right(self):
         return Coords(self.c, -self.r)
 
     def turn_left(self):
         return Coords(-self.c, self.r)
+
+    def manhattan_distance(self, other):
+        return abs(self.r - other.r) + abs(self.c - other.c)
 
     def __repr__(self):
         return f'({self.r}, {self.c})'
