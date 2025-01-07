@@ -1,10 +1,13 @@
-def get_input(use_real: bool, example_input: str, code_path: str):
+def get_input(use_real: bool, example_input: str, code_path: str, split_on_blank: bool = False):
     if (use_real):
         input_path = code_path[:-3] + '_input.txt'
         raw_input = open(input_path, "r").read()
     else:
         raw_input = example_input
 
+    if split_on_blank:
+        sections = raw_input.split("\n\n")
+        return [[l for l in section.split('\n') if l] for section in sections]
     return [l for l in raw_input.split('\n') if l]
 
 class Coords:
@@ -15,17 +18,11 @@ class Coords:
     def add(self, vector):
         return Coords(self.r + vector.r, self.c + vector.c)
 
-    def times(self, scalar):
-        return Coords(self.r * scalar, self.c * scalar)
-
     def turn_right(self):
         return Coords(self.c, -self.r)
 
     def turn_left(self):
         return Coords(-self.c, self.r)
-
-    def manhattan_distance(self, other):
-        return abs(self.r - other.r) + abs(self.c - other.c)
 
     def __repr__(self):
         return f'({self.r}, {self.c})'
